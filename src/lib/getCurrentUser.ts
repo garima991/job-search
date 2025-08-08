@@ -19,6 +19,7 @@ export async function getCurrentUser() {
       name: true,
       role: true,
       companys: true,
+      applications: true
     },
   });
 

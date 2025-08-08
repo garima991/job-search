@@ -28,3 +28,24 @@ export async function GET(
     });
   }
 }
+
+export async function DELETE(
+  req: NextRequest,
+  { params }: { params: { id: string } }
+){
+  const { id } = await params;
+  try {
+    await prismaClient.review.delete({
+      where: {
+        id: id,
+      },
+    });
+    return NextResponse.json({
+      success: true,
+      message: "Review deleted successfully.",
+    });
+  }
+  catch(error){
+    console.log(error);
+  }
+}

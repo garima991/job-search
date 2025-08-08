@@ -15,23 +15,24 @@ datasource db {
 }
 
 model Job {
-  id              String @id @default(auto()) @map("_id") @db.ObjectId
+  id              String        @id @default(auto()) @map("_id") @db.ObjectId
   title           String
   description     String
   location        String
   salary          Int
-  employment_type String @default("fulltime")
-  job_type        String @default("on-site")
-  company_id      String  @db.ObjectId
-  company         Company @relation(fields: [company_id], references: [id])
+  employment_type String        @default("fulltime")
+  job_type        String        @default("on-site")
+  company_id      String        @db.ObjectId
+  company         Company       @relation(fields: [company_id], references: [id])
+  application     Application[]
 }
 
 model User {
   id           String        @id @default(auto()) @map("_id") @db.ObjectId
   name         String
- email        String        @unique
-   password     String
-  role         UserRole        @default(CANDIDATE)
+  email        String        @unique
+  password     String
+  role         UserRole      @default(CANDIDATE)
   companys     Company[]
   review       Review[]
   applications Application[]
@@ -43,12 +44,13 @@ enum UserRole {
 }
 
 model Company {
-  id          String     @id @default(auto()) @map("_id") @db.ObjectId
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
   name        String
   description String
-  ownerId     String     @unique @db.ObjectId
-  owner       User       @relation(fields: [ownerId], references: [id])
-  jobs       Job[]
+  ownerId     String   @unique @db.ObjectId
+  owner       User     @relation(fields: [ownerId], references: [id])
+  jobs        Job[]
+  review      Review[]
 }
 
 // model Openings {
@@ -59,20 +61,22 @@ model Company {
 //   salary          Int
 //   employment_type String  @default("fulltime")
 //   job_type        String  @default("on-site")
-  
+
 // }
 
 model Review {
-  id         String @id @default(auto()) @map("_id") @db.ObjectId
+  id         String   @id @default(auto()) @map("_id") @db.ObjectId
   content    String
-  user_id    String @db.ObjectId
-  user       User   @relation(fields: [user_id], references: [id])
-  company_id String
+  user_id    String   @db.ObjectId
+  user       User     @relation(fields: [user_id], references: [id])
+  company_id String   @db.ObjectId
+  Company    Company? @relation(fields: [company_id], references: [id])
 }
 
 model Application {
   id      String @id @default(auto()) @map("_id") @db.ObjectId
   user_id String @db.ObjectId
   user    User   @relation(fields: [user_id], references: [id])
-  job_id  String
+  job_id  String @db.ObjectId
+  Job     Job?   @relation(fields: [job_id], references: [id])
 }

@@ -1,5 +1,6 @@
 import JobListItem from "@/components/JobListItem";
 import { Sidebar } from "@/components/Sidebar";
+import { Job } from "@/lib/types";
 import { Box, Container, Flex, Text, Heading } from "@radix-ui/themes";
 
 interface SearchParams {

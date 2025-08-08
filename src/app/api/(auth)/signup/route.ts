@@ -1,5 +1,4 @@
 import { generateToken, hashPassword } from "@/lib/auth";
-import { setAuthCookie } from "@/lib/cookies";
 import prismaClient from "@/services/prisma";
 import { NextRequest, NextResponse } from "next/server";
 
@@ -28,7 +27,7 @@ export async function POST(req: NextRequest) {
                 name,
                 email,
                 password: hashedPassword,
-                role: 'user'
+                role: 'CANDIDATE'
             }
         })
         const token = await generateToken({ id: user.id, email: user.email, role: user.role });

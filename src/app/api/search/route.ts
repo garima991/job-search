@@ -2,38 +2,71 @@ import prismaClient from "@/services/prisma";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(req: NextRequest) {
-    const searchParams = req.nextUrl.searchParams;
-    const query = searchParams.get('q') || '';
-    const maximumSalary = searchParams.get('ms') ? Number.parseInt(searchParams.get('ms')) : 20000;
+  try {
+    const { searchParams } = req.nextUrl;
 
-    const jobTypes = searchParams.getAll("jt"); // can be multiple
-    const workType = searchParams.get("wt"); // optional
+    const query = searchParams.get("q") || '';
+    const jobTypes = searchParams.getAll("jt");
+    const employmentType = searchParams.get("et");
+    const maxSalary = parseInt(searchParams.get("ms") || "0");
 
-    const data = await prismaClient.job.findMany({
-        where: {
+    const filters: any = {
+      AND: [],
+    };
+
+
+    if (query.trim()) {
+      filters.AND.push({
+        OR: [
+          {
             title: {
-                contains: query,
-                mode: "insensitive",
+              contains: query,
+              mode: "insensitive",
             },
-            salary: {
-                lte: maximumSalary,
+          },
+          {
+            description: {
+              contains: query,
+              mode: "insensitive",
             },
-            ...(jobTypes.length > 0 && {
-                employment_type: {
-                    in: jobTypes,
-                },
-            }),
-            ...(workType && workType !== "all" && {
-                job_type: workType,
-            }),
+          },
+        ],
+      });
+    }
+
+    if (jobTypes.length > 0) {
+      filters.AND.push({
+        job_type: {
+          in: jobTypes,
         },
+      });
+    }
+
+    if (employmentType && employmentType !== "all") {
+      filters.AND.push({
+        employment_type: employmentType,
+      });
+    }
+
+  
+    if (maxSalary) {
+      filters.AND.push({
+        salary: {
+          lte: maxSalary,
+        },
+      });
+    }
+
+    const jobs = await prismaClient.job.findMany({
+      where: filters.AND.length > 0 ? filters : undefined,
     });
 
-    console.log(data);
-
-
-    return NextResponse.json({
-        success: true,
-        data: data
-    })
-};
+    return NextResponse.json({ success: true, data: jobs });
+  } catch (error) {
+    console.error("Search error:", error);
+    return NextResponse.json(
+      { success: false, message: "Server error" },
+      { status: 500 }
+    );
+  }
+}

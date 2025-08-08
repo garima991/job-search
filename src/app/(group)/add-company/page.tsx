@@ -2,16 +2,16 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { 
-  Box, 
-  Button, 
-  Card, 
-  Container, 
-  Flex, 
-  Heading, 
-  Text, 
-  TextArea, 
-  TextField 
+import {
+  Box,
+  Button,
+  Card,
+  Container,
+  Flex,
+  Heading,
+  Text,
+  TextArea,
+  TextField
 } from "@radix-ui/themes";
 import { Building2, ArrowLeft } from "lucide-react";
 
@@ -35,13 +35,13 @@ export default function AddCompanyPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     // Basic validation
     if (!formData.name.trim()) {
       setError("Company name is required");
       return;
     }
-    
+
     if (!formData.description.trim()) {
       setError("Company description is required");
       return;
@@ -65,7 +65,14 @@ export default function AddCompanyPage() {
       const result = await response.json();
 
       if (result.success) {
-       
+        await fetch("/api/user", {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ role: "EMPLOYEER" }),
+        });
+
         router.push("/company");
       } else {
         setError("Failed to create company. Please try again.");
@@ -85,11 +92,11 @@ export default function AddCompanyPage() {
   return (
     <Container size="2" className="py-8">
       <Box className="max-w-2xl mx-auto">
-        {/* Header */}
+
         <Flex align="center" gap="4" mb="6">
-          <Button 
-            variant="ghost" 
-            size="2" 
+          <Button
+            variant="ghost"
+            size="2"
             onClick={handleGoBack}
             className="text-gray-400 hover:text-white"
           >

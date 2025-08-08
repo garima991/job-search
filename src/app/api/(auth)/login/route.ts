@@ -29,13 +29,13 @@ export async function POST(req: NextRequest) {
         }
 
         // Compare the provided password with stored hash
-        // const isPasswordValid = await comparePassword(body.password, user.password);
-        // if (!isPasswordValid) {
-        //     return NextResponse.json({
-        //         success: false,
-        //         message: 'Invalid email or password'
-        //     }, { status: 401 });
-        // }
+        const isPasswordValid = await comparePassword(body.password, user.password);
+        if (!isPasswordValid) {
+            return NextResponse.json({
+                success: false,
+                message: 'Invalid email or password'
+            }, { status: 401 });
+        }
 
         // Generate JWT token
         const token = await generateToken({

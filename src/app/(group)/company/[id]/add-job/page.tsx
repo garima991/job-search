@@ -1,7 +1,4 @@
 "use client"
-
-import { UserContext } from "@/app/(group)/layout";
-import { getCurrentUser } from "@/lib/getCurrentUser";
 import {
     Box,
     Button,
@@ -16,7 +13,8 @@ import {
     Separator
 } from "@radix-ui/themes";
 import { useParams } from "next/navigation";
-import { useContext, useState } from "react"
+import { useRouter } from "next/navigation";
+import { useState } from "react"
 
 export default function AddJobPage() {
     const [jobTitle, setJobTitle] = useState("");
@@ -27,6 +25,7 @@ export default function AddJobPage() {
     const [employmentType, setEmploymentType] = useState("");
 
     const {id} = useParams();
+    const router = useRouter();
 
    async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -48,9 +47,10 @@ export default function AddJobPage() {
     const response = await res.json();
 
     if (response.success) {
-      alert("Product added in DB!");
+      alert("Job added successfully !");
+      router.push(`/company/${id}`);
+      
     }
-    console.log("Submitted:", form);
   }
 
     return (
@@ -134,10 +134,11 @@ export default function AddJobPage() {
                                     <Select.Root value={jobType} onValueChange={setJobType}>
                                         <Select.Trigger placeholder="Select job type" className="w-full" />
                                         <Select.Content>
-                                            <Select.Item value="full-time">Full Time</Select.Item>
-                                            <Select.Item value="part-time">Part Time</Select.Item>
-                                            <Select.Item value="internship">Internship</Select.Item>
-                                        </Select.Content>
+                                        <Select.Item value="remote">Remote</Select.Item>
+                                        <Select.Item value="on-site">On-site</Select.Item>
+                                        <Select.Item value="hybrid">Hybrid</Select.Item>
+                                    </Select.Content>
+                                        
                                     </Select.Root>
                                 </Box>
                             </Flex>
@@ -151,10 +152,10 @@ export default function AddJobPage() {
                                 <Select.Root value={employmentType} onValueChange={setEmploymentType}>
                                     <Select.Trigger placeholder="Select Employement Type" className="w-full" />
                                     <Select.Content>
-                                        <Select.Item value="remote">Remote</Select.Item>
-                                        <Select.Item value="onsite">On-site</Select.Item>
-                                        <Select.Item value="hybrid">Hybrid</Select.Item>
-                                    </Select.Content>
+                                            <Select.Item value="fulltime">Full Time</Select.Item>
+                                            <Select.Item value="parttime">Part Time</Select.Item>
+                                            <Select.Item value="internship">Internship</Select.Item>
+                                        </Select.Content>
                                 </Select.Root>
                             </Box>
 

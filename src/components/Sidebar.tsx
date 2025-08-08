@@ -19,17 +19,16 @@ export const Sidebar = () => {
   const router = useRouter();
 
   const [jobType, setJobType] = useState<string[]>([]);
-  const [workType, setWorkType] = useState<string>("");
+  const [employementType, setEmployementType] = useState<string>("");
   const [salary, setSalary] = useState<number>(4400);
 
-  // Pre-fill from URL on first render
   useEffect(() => {
     const jt = searchParams.getAll("jt");
-    const wt = searchParams.get("wt");
+    const et = searchParams.get("et");
     const ms = searchParams.get("ms");
 
     if (jt.length) setJobType(jt);
-    if (wt) setWorkType(wt);
+    if(et) setEmployementType(et);
     if (ms) setSalary(parseInt(ms));
   }, []);
 
@@ -38,20 +37,20 @@ export const Sidebar = () => {
 
     if (salary) params.set("ms", salary.toString());
 
-    if (workType && workType !== "all") {
-      params.set("wt", workType);
+    if (employementType && employementType !== "all") {
+      params.set("et", employementType);
     }
 
     jobType.forEach((jt) => params.append("jt", jt));
 
-    router.push(`?${params.toString()}`);
+    router.push(`/search?${params.toString()}`);
   };
 
   const handleClear = () => {
     setJobType([]);
-    setWorkType("");
+    setEmployementType("");
     setSalary(4400);
-    router.push("/");
+    router.push("/search?");
   };
 
   return (
@@ -92,8 +91,8 @@ export const Sidebar = () => {
           Work Location
         </Text>
         <RadioGroup.Root
-          value={workType}
-          onValueChange={setWorkType}
+          value={employementType}
+          onValueChange={setEmployementType}
           className="flex flex-col gap-2"
         >
           <RadioGroup.Item value="all">All Locations</RadioGroup.Item>

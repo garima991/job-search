@@ -2,10 +2,17 @@
 
 import { createContext, useEffect, useState } from "react";
 
-export const JobContext = createContext(null);
+interface JobContextType {
+  saveJob: (job: any) => void;
+  unsaveJob: (jobId: string) => void;
+  isSaved: (jobId: string) => boolean;
+  savedJobs: any[];
+}
 
-export default function JobContextProvider({ children }) {
-  const [savedJobs, setSavedJobs] = useState([]);
+export const JobContext = createContext<JobContextType | null>(null);
+
+export default function JobContextProvider({ children }: { children: React.ReactNode }) {
+  const [savedJobs, setSavedJobs] = useState<any[]>([]);
 
   // onload get all saved jobs
   useEffect(() => {
@@ -21,18 +28,18 @@ export default function JobContextProvider({ children }) {
   }, [savedJobs]);
 
   // save job
-  const saveJob = (job) => {
+  const saveJob = (job: any) => {
     // if (!isSaved(job.job_id)) {
       setSavedJobs((prev) => [...prev, job]);
     // }
   };
 
   // unsave job
-  const unsaveJob = (jobId) => {
+  const unsaveJob = (jobId: string) => {
     setSavedJobs((prev) => prev.filter((job) => job.id !== jobId));
   };
 
-  const isSaved = (jobId) => {
+  const isSaved = (jobId: string) => {
     return savedJobs.some((job) => job.id === jobId);
   };
 
