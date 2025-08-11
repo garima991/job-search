@@ -16,36 +16,21 @@ import {
 import { Building2, ArrowLeft } from "lucide-react";
 
 export default function AddCompanyPage() {
-  const [formData, setFormData] = useState({
-    name: "",
-    description: ""
-  });
+  const [formData, setFormData] = useState({ name: "", description: "" });
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
   const router = useRouter();
 
   const handleInputChange = (field: string, value: string) => {
-    setFormData(prev => ({
-      ...prev,
-      [field]: value
-    }));
-    // Clear error when user starts typing
+    setFormData(prev => ({ ...prev, [field]: value }));
     if (error) setError("");
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    // Basic validation
-    if (!formData.name.trim()) {
-      setError("Company name is required");
-      return;
-    }
-
-    if (!formData.description.trim()) {
-      setError("Company description is required");
-      return;
-    }
+    if (!formData.name.trim()) return setError("Company name is required");
+    if (!formData.description.trim()) return setError("Company description is required");
 
     setIsLoading(true);
     setError("");
@@ -53,9 +38,7 @@ export default function AddCompanyPage() {
     try {
       const response = await fetch("/api/company", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           name: formData.name.trim(),
           description: formData.description.trim()
@@ -67,9 +50,7 @@ export default function AddCompanyPage() {
       if (result.success) {
         await fetch("/api/user", {
           method: "PATCH",
-          headers: {
-            "Content-Type": "application/json",
-          },
+          headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ role: "EMPLOYEER" }),
         });
 
@@ -77,91 +58,90 @@ export default function AddCompanyPage() {
       } else {
         setError("Failed to create company. Please try again.");
       }
-    } catch (error) {
-      console.error("Error creating company:", error);
+    } catch (err) {
+      console.error("Error creating company:", err);
       setError("An unexpected error occurred. Please try again.");
     } finally {
       setIsLoading(false);
     }
   };
 
-  const handleGoBack = () => {
-    router.back();
-  };
-
   return (
-    <Container size="2" className="py-8">
-      <Box className="max-w-2xl mx-auto">
-
-        <Flex align="center" gap="4" mb="6">
+    <Container size="2" className="py-6 sm:py-10 px-4">
+      <Box className="max-w-xl mx-auto">
+       
+        <Flex align="center" gap="3" mb="6">
           <Button
             variant="ghost"
             size="2"
-            onClick={handleGoBack}
-            className="text-gray-400 hover:text-white"
+            onClick={() => router.back()}
+            className="p-1 hover:bg-[var(--color-surface-hover)] rounded-full"
           >
             <ArrowLeft size={18} />
           </Button>
-          <Box>
-            <Flex align="center" gap="3" mb="2">
-              <Building2 size={24} className="text-blue-500" />
-              <Heading size="6" className="text-white">
-                Add Your Company
-              </Heading>
-            </Flex>
-            <Text size="2" className="text-gray-400">
-              Create your company profile to start posting jobs
-            </Text>
-          </Box>
+          <Flex align="center" gap="2">
+            <Building2 size={22} className="text-[var(--color-accent)]" />
+            <Heading size={{ initial: "4", sm: "5" }} className="text-[var(--color-foreground)]">
+              Add Company
+            </Heading>
+          </Flex>
         </Flex>
 
-        {/* Form Card */}
-        <Card className="bg-gray-800 border-gray-700">
-          <Box p="6">
+      
+        <Card className="bg-[var(--color-surface)] border border-[var(--color-border)] rounded-xl">
+          <Box p="4" className="sm:p-5">
             <form onSubmit={handleSubmit}>
-              <Flex direction="column" gap="5">
-                {/* Company Name */}
+              <Flex direction="column" gap="4">
+              
                 <Box>
-                  <Text as="label" size="2" weight="medium" className="text-white mb-2 block">
+                  <Text
+                    as="label"
+                    size="2"
+                    className="text-[var(--color-foreground-secondary)] mb-1 block"
+                  >
                     Company Name *
                   </Text>
                   <TextField.Root
-                    placeholder="Enter your company name"
+                    placeholder="Enter company name"
                     value={formData.name}
                     onChange={(e) => handleInputChange("name", e.target.value)}
                     size="3"
                     className="w-full"
                     style={{
-                      backgroundColor: 'rgb(55, 65, 81)',
-                      borderColor: 'rgb(75, 85, 99)',
-                      color: 'white'
+                      backgroundColor: "transparent",
+                      borderColor: "var(--color-border)",
+                      color: "var(--color-foreground)"
                     }}
                   />
                 </Box>
 
-                {/* Company Description */}
+             
                 <Box>
-                  <Text as="label" size="2" weight="medium" className="text-white mb-2 block">
+                  <Text
+                    as="label"
+                    size="2"
+                    className="text-[var(--color-foreground-secondary)] mb-1 block"
+                  >
                     Company Description *
                   </Text>
                   <TextArea
-                    placeholder="Describe your company, its mission, values, and what makes it unique..."
+                    placeholder="Briefly describe your company..."
                     value={formData.description}
                     onChange={(e) => handleInputChange("description", e.target.value)}
-                    rows={6}
+                    rows={5}
                     className="w-full resize-none"
                     style={{
-                      backgroundColor: 'rgb(55, 65, 81)',
-                      borderColor: 'rgb(75, 85, 99)',
-                      color: 'white'
+                      backgroundColor: "transparent",
+                      borderColor: "var(--color-border)",
+                      color: "var(--color-foreground)"
                     }}
                   />
-                  <Text size="1" className="text-gray-500 mt-1">
+                  <Text size="1" className="text-[var(--color-muted)] mt-1">
                     {formData.description.length}/500 characters
                   </Text>
                 </Box>
 
-                {/* Error Message */}
+             
                 {error && (
                   <Box className="bg-red-900/20 border border-red-800 rounded-md p-3">
                     <Text size="2" className="text-red-400">
@@ -170,49 +150,34 @@ export default function AddCompanyPage() {
                   </Box>
                 )}
 
-                {/* Submit Button */}
-                <Flex gap="3" justify="end" mt="4">
+                
+                <Flex gap="3" justify="end" mt="2" className="flex-col sm:flex-row">
                   <Button
                     type="button"
                     variant="soft"
                     color="gray"
-                    size="3"
-                    onClick={handleGoBack}
+                    onClick={() => router.back()}
                     disabled={isLoading}
+                    className="w-full sm:w-auto"
                   >
                     Cancel
                   </Button>
                   <Button
                     type="submit"
-                    size="3"
-                    disabled={isLoading || !formData.name.trim() || !formData.description.trim()}
-                    className="bg-blue-600 hover:bg-blue-700 text-white"
+                    disabled={
+                      isLoading ||
+                      !formData.name.trim() ||
+                      !formData.description.trim()
+                    }
+                    className="bg-[var(--color-accent)] hover:bg-[var(--color-accent-hover)] text-white w-full sm:w-auto"
                   >
-                    {isLoading ? "Creating..." : "Create Company"}
+                    {isLoading ? "Creating..." : "Create"}
                   </Button>
                 </Flex>
               </Flex>
             </form>
           </Box>
         </Card>
-
-        {/* Additional Info */}
-        <Box mt="6" className="bg-gray-800/50 border border-gray-700 rounded-lg p-4">
-          <Heading size="3" className="text-white mb-3">
-            What happens next?
-          </Heading>
-          <Flex direction="column" gap="2">
-            <Text size="2" className="text-gray-300">
-              • Your company profile will be created and visible to job seekers
-            </Text>
-            <Text size="2" className="text-gray-300">
-              • You'll be able to post job openings under your company
-            </Text>
-            <Text size="2" className="text-gray-300">
-              • Job seekers can learn more about your company when viewing your jobs
-            </Text>
-          </Flex>
-        </Box>
       </Box>
     </Container>
   );

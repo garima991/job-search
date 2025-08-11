@@ -2,8 +2,8 @@ import DeleteButton from "@/components/DeleteButton";
 import PostReviewButton from "@/components/PostReviewButton";
 import { getCurrentUser } from "@/lib/getCurrentUser";
 import { Job } from "@/lib/types";
-import { Badge, Box, Button, Text } from "@radix-ui/themes";
-import { ArrowLeft } from "lucide-react";
+import { Badge, Box, Button, Text, Heading } from "@radix-ui/themes";
+import { ArrowLeft, Building2, Briefcase, Star, Users } from "lucide-react";
 import Link from "next/link"
 
 export default async function CompanyDetailsPage({
@@ -23,98 +23,117 @@ export default async function CompanyDetailsPage({
   const reviews = await reviewData.data;
 
   return (
-    <main className="max-w-4xl mx-auto p-6 space-y-10">
-
-      <div className="flex justify-between items-center">
-        <Link
-          href="/company"
-          className="inline-flex items-center gap-2 text-blue-400 hover:text-blue-300 transition-colors"
-        >
-          <ArrowLeft size={16} />
-          <Text size="2">Back to Jobs</Text>
-        </Link>
-        <div className="space-x-2">
-          {user?.id === company.ownerId && (
-            <Link href={`/company/${company.id}/add-job`}>
-              <Button variant="soft">
-                Post Job
-              </Button>
-            </Link>
-          )}
-
-          {user?.id != company.ownerId && (
-            <PostReviewButton/>
-          )}
-
-        </div>
+    <div className="min-h-screen bg-black">
+      {/* Background Pattern */}
+      <div className="absolute inset-0 opacity-5">
+        <div className="absolute top-20 left-20 w-72 h-72 bg-white rounded-full blur-3xl"></div>
+        <div className="absolute bottom-20 right-20 w-96 h-96 bg-gray-400 rounded-full blur-3xl"></div>
       </div>
 
+      <main className="max-w-4xl mx-auto p-4 sm:p-6 space-y-8 sm:space-y-10 relative z-10">
 
-      <section className="shadow-lg p-6 rounded-lg bg-gray-800">
-        <h1 className="text-3xl font-bold mb-2">{company.name}</h1>
-        <p className="text-gray-600">{company.description}</p>
-        <p className="text-sm text-gray-500 mt-2">
-          Owner: {company.owner?.name || "Unknown"}
-        </p>
-      </section>
-
-
-      <section>
-        <h2 className="text-2xl font-semibold mb-4">Jobs</h2>
-        {company?.jobs?.length === 0 ? (
-          <p className="text-gray-500">No jobs posted yet.</p>
-        ) : (
-          <ul className="flex flex-col gap-5">
-            {company?.jobs?.map((job: Job) => (
-              <Link href={`/jobs/${job.id}`} key={job.id}>
-                <li
-                  className="border p-4 rounded-md shadow-sm job-card-dark"
-                >
-                  <h3 className="text-lg font-medium">{job.title}</h3>
-                  <p className="text-gray-500">{job.description}</p>
-                </li>
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+          <Link
+            href="/company"
+            className="inline-flex items-center gap-2 text-white hover:text-gray-300 transition-colors"
+          >
+            <ArrowLeft size={16} />
+            <Text size="2">Back to Companies</Text>
+          </Link>
+          <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
+            {user?.id === company.ownerId && (
+              <Link href={`/company/${company.id}/add-job`}>
+                <Button className="btn-primary w-full sm:w-auto">
+                  Post Job
+                </Button>
               </Link>
-            ))}
-          </ul>
-        )}
-      </section>
+            )}
 
+            {user?.id != company.ownerId && (
+              <PostReviewButton/>
+            )}
+          </div>
+        </div>
 
-      <section>
-        <h2 className="text-2xl font-semibold mb-4">Reviews</h2>
-        {reviews?.length === 0 ? (
-          <p className="text-gray-500">No reviews yet.</p>
-        ) : (
-          <ul className="space-y-4">
-            {reviews?.map((review) => (
-              <li
-                key={review.id}
-                className="flex justify-between items-center border p-4 rounded-md shadow-sm"
-              >
-                <div className = "flex flex-col">
-                 <p className="text-gray-400">{review.content}</p>
-                 <span className="font-light text-sm text-gray-400">
-                    By: {review.user?.name || "Anonymous"}
-                  </span>
-                </div>
-                {user?.id === company.ownerId || user?.id === review.user?.id && (
-                  <DeleteButton type = "review" id = {`${review.id}`} redirectTo = "" />
-                )}
-                
-              </li>
-            ))}
-          </ul>
-        )}
-      </section>
-      {user?.id === company.ownerId && (
-        <section>
-          <DeleteButton
-          type="company"
-          id={company.id}
-          redirectTo="/company"
-        />
+        <section className="modern-card p-6 sm:p-8">
+          <div className="flex items-center gap-3 mb-4">
+            <div className="icon-container">
+              <Building2 className="w-6 h-6 text-black" />
+            </div>
+            <Heading size={{ initial: "5", sm: "6" }} className="text-white">{company.name}</Heading>
+          </div>
+          <p className="text-gray-300 mb-4">{company.description}</p>
+          <p className="text-sm text-gray-400">
+            Owner: {company.owner?.name || "Unknown"}
+          </p>
         </section>
-      )}
-    </main>
+
+        <section>
+          <div className="flex items-center gap-3 mb-4 sm:mb-6">
+            <Briefcase className="w-5 h-5 text-white" />
+            <Heading size={{ initial: "3", sm: "4" }} className="text-white">Jobs</Heading>
+          </div>
+          {company?.jobs?.length === 0 ? (
+            <div className="text-center py-6 sm:py-8">
+              <p className="text-gray-400">No jobs posted yet.</p>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {company?.jobs?.map((job: Job) => (
+                <Link href={`/jobs/${job.id}`} key={job.id}>
+                  <div className="modern-card p-4 cursor-pointer">
+                    <h3 className="text-base sm:text-lg font-medium text-white mb-2">{job.title}</h3>
+                    <p className="text-gray-300 text-sm line-clamp-2">{job.description}</p>
+                  </div>
+                </Link>
+              ))}
+            </div>
+          )}
+        </section>
+
+        <section>
+          <div className="flex items-center gap-3 mb-4 sm:mb-6">
+            <Star className="w-5 h-5 text-white" />
+            <Heading size={{ initial: "3", sm: "4" }} className="text-white">Reviews</Heading>
+          </div>
+          {reviews?.length === 0 ? (
+            <div className="text-center py-6 sm:py-8">
+              <p className="text-gray-400">No reviews yet.</p>
+            </div>
+          ) : (
+            <div className="space-y-4">
+              {reviews?.map((review) => (
+                <div
+                  key={review.id}
+                  className="modern-card p-4"
+                >
+                  <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-2">
+                    <div className="flex-1">
+                      <p className="text-gray-300 mb-2">{review.content}</p>
+                      <span className="font-light text-sm text-gray-400">
+                        By: {review.user?.name || "Anonymous"}
+                      </span>
+                    </div>
+                    {(user?.id === company.ownerId || user?.id === review.user?.id) && (
+                      <DeleteButton type="review" id={`${review.id}`} redirectTo="" />
+                    )}
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </section>
+
+        {user?.id === company.ownerId && (
+          <section className="text-center">
+            <DeleteButton
+              type="company"
+              id={company.id}
+              redirectTo="/company"
+            />
+          </section>
+        )}
+      </main>
+    </div>
   );
 }

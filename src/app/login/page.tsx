@@ -9,11 +9,11 @@ import {
   Container,
   Flex,
   Text,
-  TextField,
   Heading,
   Separator,
   Link
 } from "@radix-ui/themes";
+import { Mail, Lock } from 'lucide-react';
 
 const LoginPage = () => {
   const [email, setEmail] = useState("");
@@ -27,116 +27,135 @@ const LoginPage = () => {
     setIsLoading(true);
     setError("");
 
-    console.log(email, password);
-
     try {
       const res = await fetch('/api/login', {
         method: "POST",
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({
-          email,
-          password
-        }),
+        body: JSON.stringify({ email, password }),
         credentials: 'include'
       });
 
       const data = await res.json();
 
       if (data?.success) {
-
         const redirectPath = data?.redirectTo || '/jobs';
         router.push(redirectPath);
-
       } else {
         setError(data?.message || 'Login failed. Please try again.');
       }
     }
-    catch (error) {
-      console.log(error);
+    catch {
       setError('Something went wrong. Please try again.');
     } finally {
       setIsLoading(false);
     }
-  }
+  };
 
   return (
-    <Box className="min-h-screen bg-gray-900 flex items-center justify-center p-4">
-      <Container size="1" className="w-full max-w-md mx-auto mt-20">
-        <Card size="4" className="bg-gray-800 border border-gray-700 shadow-2xl">
-          <Flex direction="column" gap="6">
-            {/* Header */}
+    <Box
+      className="min-h-screen flex items-center justify-center p-4 sm:p-6"
+      style={{ background: "var(--background)" }}
+    >
+      <Container size="1" className="w-full max-w-md mx-auto fade-in">
+
+        <Card size="4" className="modern-card relative z-10">
+          <Flex direction="column" gap="4 sm:gap-6">
+
             <Box className="text-center">
-              <Heading size="6" className="text-white mb-2">
+              <Heading
+                size={{ initial: "5", sm: "6" }}
+                style={{ color: "var(--foreground)" }}
+                className="mb-2"
+              >
                 Welcome Back
               </Heading>
-              <Text size="3" className="text-gray-400">
+              <Text size={{ initial: "2", sm: "3" }} style={{ color: "var(--foreground-muted)" }}>
                 Sign in to your JobFinder account
               </Text>
             </Box>
 
-
             <form onSubmit={handleSubmit}>
-              <Flex direction="column" gap="4">
-                {/* Error Message */}
+              <Flex direction="column" gap="3 sm:gap-4">
+
                 {error && (
-                  <Box className="p-3 bg-red-900/50 border border-red-700 rounded-md">
-                    <Text size="2" className="text-red-300">
+                  <Box
+                    className="rounded-md p-3"
+                    style={{
+                      background: "rgba(255,0,0,0.1)",
+                      border: "1px solid rgba(255,0,0,0.3)",
+                    }}
+                  >
+                    <Text size="2" style={{ color: "var(--accent)" }}>
                       {error}
                     </Text>
                   </Box>
                 )}
 
                 <Box>
-                  <Text as="label" size="2" weight="medium" className="text-white mb-2 block">
+                  <Text
+                    as="label"
+                    size="2"
+                    weight="medium"
+                    style={{ color: "var(--foreground)" }}
+                    className="mb-2 block"
+                  >
                     Email Address
                   </Text>
-                  <TextField.Root
+
+                  <input
                     type="email"
                     placeholder="Enter your email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    size="3"
-                    className="w-full"
+                    className="modern-input w-full pl-10 pr-4"
                     required
                   />
+
                 </Box>
 
 
                 <Box>
-                  <Text as="label" size="2" weight="medium" className="text-white mb-2 block">
+                  <Text
+                    as="label"
+                    size="2"
+                    weight="medium"
+                    style={{ color: "var(--foreground)" }}
+                    className="mb-2 block"
+                  >
                     Password
                   </Text>
-                  <TextField.Root
+
+                  <input
                     type="password"
                     placeholder="Enter your password"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
-                    size="3"
-                    className="w-full"
+                    className="modern-input w-full pl-10 pr-4"
                     required
                   />
+
                 </Box>
 
-
-                {/* Submit Button */}
-                <Button
+                <button
                   type="submit"
-                  variant="solid"
-                  size="3"
-                  className="w-full bg-blue-600 hover:bg-blue-700 mt-2"
+                  className="btn-primary w-full mt-2"
                   disabled={isLoading}
                 >
                   {isLoading ? 'Signing in...' : 'Sign In'}
-                </Button>
+                </button>
               </Flex>
             </form>
 
             <Box className="text-center">
-              <Text size="2" className="text-gray-400">
+              <Text size="2" style={{ color: "var(--foreground-muted)" }}>
                 Don't have an account?{' '}
-                <Link href="/signup" className="text-blue-400 hover:text-blue-300 font-medium">
+                <Link
+                  href="/signup"
+                  style={{ color: "var(--foreground)" }}
+                  className="font-medium hover:opacity-80 transition-colors"
+                >
                   Sign up here
                 </Link>
               </Text>
@@ -146,7 +165,7 @@ const LoginPage = () => {
         </Card>
       </Container>
     </Box>
-  )
-}
+  );
+};
 
 export default LoginPage;

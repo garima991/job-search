@@ -3,7 +3,7 @@ import prismaClient from "@/services/prisma";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(req: NextRequest, { params }: { params: { id: string } }){
-    const user = getCurrentUser();
+    const user = await getCurrentUser();
     const job_id = params.id;
 
     if(!user){
@@ -19,7 +19,7 @@ export async function POST(req: NextRequest, { params }: { params: { id: string 
     }
 
     try{
-        const application = await prismaClient.application.findMany({
+        const application = await prismaClient.application.create({
             data: appToSave
         })
 

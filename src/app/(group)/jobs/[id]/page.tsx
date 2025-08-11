@@ -1,18 +1,16 @@
 import { getCurrentUser } from "@/lib/getCurrentUser";
-import { Box, Button, Card, Flex, Heading, Separator, Text, Badge } from "@radix-ui/themes";
-import { Briefcase, Globe, MapPin, Save, SaveIcon, Wallet, ArrowLeft, Clock, Building } from "lucide-react";
+import { Card, Heading, Separator, Text, Badge } from "@radix-ui/themes";
+import { Briefcase, Globe, MapPin, Wallet, ArrowLeft, Clock, Building } from "lucide-react";
 import Link from "next/link";
 import ViewJobApplicantsBtn from "@/components/ViewJobApplicantsBtn";
 import ApplyButton from "@/components/ApplyButton";
 import SaveButton from "@/components/SaveButton";
 import { Metadata } from "next";
 import DeleteButton from "@/components/DeleteButton";
-import EditJobDialog from "@/components/EditJobDialog"
-
+import EditJobDialog from "@/components/EditJobDialog";
 
 export async function generateMetadata({ params }: { params: { id: string } }): Promise<Metadata> {
   const { id } = await params;
-
   try {
     const response = await fetch(`http://localhost:3000/api/jobs/${id}`);
     if (!response.ok) throw new Error("Failed to fetch job data");
@@ -23,7 +21,7 @@ export async function generateMetadata({ params }: { params: { id: string } }): 
       title: `${job.title} at ${job.company.name} | JobSearch`,
       description: `${job.title} position at ${job.company.name} in ${job.location}. ${job.description.substring(0, 150)}...`,
     };
-  } catch (error) {
+  } catch {
     return {
       title: "Job Details | JobSearch",
       description: "View detailed information about this job opportunity",
@@ -42,10 +40,9 @@ export default async function JobDetailPage({ params }: { params: { id: string }
     if (!response.ok) throw new Error("Failed to fetch job data");
     const data = await response.json();
     job = data.data;
-  } catch (error) {
-    console.error(error);
+  } catch {
     return (
-      <div className="min-h-screen bg-gray-900 px-4 py-8">
+      <div className="min-h-screen px-4 py-8" style={{ background: "var(--background)" }}>
         <div className="max-w-4xl mx-auto">
           <Text color="red" size="4">Failed to load job data.</Text>
         </div>
@@ -53,129 +50,125 @@ export default async function JobDetailPage({ params }: { params: { id: string }
     );
   }
 
-
   return (
-    <div className="min-h-screen bg-gray-900 px-4 py-6 sm:py-8 lg:py-12">
-      <div className="max-w-4xl mx-auto">
+<div className="min-h-screen px-4 py-6" style={{ background: "var(--background)" }}>
+  <div className="max-w-4xl mx-auto fade-in">
 
-        <Link
-          href="/jobs"
-          className="inline-flex items-center gap-2 text-blue-400 hover:text-blue-300 transition-colors mb-6 lg:mb-8"
-        >
-          <ArrowLeft size={16} />
-          <Text size="2">Back to Jobs</Text>
-        </Link>
-
-        <Card size="3" className="bg-gray-800 border border-gray-700 shadow-xl hover:shadow-2xl transition-shadow">
-
-          <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-6 mb-8">
-            <div className="flex-1">
-              <Heading size="6" className="text-white mb-3 leading-tight lg:text-4xl">
-                {job?.title}
-              </Heading>
-              <Link href={`/company/${job?.company.id}`}>
-                <Text size="4" color="blue" className="hover:underline flex items-center gap-2 mb-4">
-                  <Building size={18} />
-                  {job?.company.name}
-                </Text>
-              </Link>
-              <div className="flex flex-wrap gap-2">
-                <Badge variant="soft" color="green" className="px-3 py-1">
-                  {job?.employment_type}
-                </Badge>
-                <Badge variant="soft" color="blue" className="px-3 py-1">
-                  {job?.job_type}
-                </Badge>
-              </div>
-
-
-            </div>
-
-            {isCandidate && (
-              <div className="flex flex-col sm:flex-row gap-3 lg:min-w-fit lg:flex-col xl:flex-row">
-                <ApplyButton jobId={job.id} />
-                <SaveButton jobId={job.id} title={job.title} companyName={job.company.name} />
-              </div>
-
-            )}
-          </div>
-
-          <Separator className="my-6 border-gray-600" />
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-            <div className="space-y-4">
-              <div className="flex items-center gap-3 text-gray-300">
-                <MapPin size={18} className="text-blue-400" />
-                <Text size="3">{job?.location}</Text>
-              </div>
-
-              {job?.salary && (
-                <div className="flex items-center gap-3 text-gray-300">
-                  <Wallet size={18} className="text-green-400" />
-                  <Text size="3" weight="medium" className="text-green-400">
-                    ${job?.salary.toLocaleString()} / year
-                  </Text>
-                </div>
-              )}
-            </div>
-
-            <div className="space-y-4">
-              <div className="flex items-center gap-3 text-gray-300">
-                <Briefcase size={18} className="text-purple-400" />
-                <Text size="3">{job?.employment_type}</Text>
-              </div>
-
-              <div className="flex items-center gap-3 text-gray-300">
-                <Globe size={18} className="text-indigo-400" />
-                <Text size="3">{job?.job_type}</Text>
-              </div>
-            </div>
-          </div>
-
-          <Separator className="my-6 border-gray-600" />
-
-
-          <div className="mb-8">
-            <Heading size="4" className="text-white mb-4 flex items-center gap-2">
-              <Briefcase size={20} />
-              About this role
-            </Heading>
-            <div className="prose prose-invert max-w-none">
-              <Text as="p" size="3" className="text-gray-300 leading-relaxed whitespace-pre-wrap">
-                {job?.description}
-              </Text>
-            </div>
-          </div>
-
-
-          <div className="mb-8 p-6 bg-gray-800/50 rounded-lg border border-gray-700">
-            <Heading size="4" className="text-white mb-3">About {job?.company.name}</Heading>
-            <Link
-              href={`/company/${job?.company.id}`}
-              className="inline-flex items-center gap-2 text-blue-400 hover:text-blue-300 transition-colors"
-            >
-              <Globe size={16} />
-              View company profile
-            </Link>
-          </div>
-
-
-          {!isCandidate && (
-            <div className="flex flex-col items-center sm:flex-row gap-4 pt-6 border-t border-gray-600">
-              <div className="flex flex-wrap gap-4">
-                <EditJobDialog job={job} companyId={job.companyId} />
-                <DeleteButton
-                  type="job"
-                  id={job.id}
-                  redirectTo={`/company/${job.company.id}`}
-                />
-                <ViewJobApplicantsBtn/>
-              </div>
-            </div>
-          )}
-
-        </Card>
+    {/* Back Navigation */}
+    <Link
+      href="/jobs"
+      className="inline-flex items-center gap-2 mb-6 group text-sm"
+      style={{ color: "var(--foreground-muted)" }}
+    >
+      <div
+        className="rounded-md p-1.5 border transition-colors group-hover:bg-[var(--background-hover)]"
+        style={{
+          background: "var(--background-secondary)",
+          borderColor: "var(--border)",
+        }}
+      >
+        <ArrowLeft size={14} />
       </div>
-    </div>
+      <span className="group-hover:underline">Back to Jobs</span>
+    </Link>
+
+    {/* Main Card */}
+    <Card size="3" className="modern-card p-4 sm:p-5 lg:p-6">
+      <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-4 sm:gap-5 mb-6">
+        <div className="flex-1">
+          <Heading size={{ initial: "5", sm: "6" }} className="mb-2 leading-snug" style={{ color: "var(--foreground)" }}>
+            {job?.title}
+          </Heading>
+
+
+          {/* Badges */}
+          <div className="flex flex-wrap gap-1.5 mt-3">
+            {[job?.employment_type, job?.job_type].map((badge, i) => (
+              <span
+                key={i}
+                className="px-2.5 py-0.5 rounded-full text-xs font-medium border bg-[var(--background-secondary)]"
+                style={{ borderColor: "var(--border)", color: "var(--foreground-muted)" }}
+              >
+                {badge}
+              </span>
+            ))}
+          </div>
+        </div>
+
+        {/* Candidate Buttons */}
+        {isCandidate && (
+          <div className="flex flex-col sm:flex-row gap-2 lg:flex-col xl:flex-row">
+            <ApplyButton jobId={job.id} />
+            <SaveButton jobId={job.id} title={job.title} companyName={job.company.name} />
+          </div>
+        )}
+      </div>
+
+      {/* Job Info */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4 mb-6">
+        {[
+          { icon: MapPin, label: "Location", value: job?.location },
+          job?.salary && { icon: Wallet, label: "Salary", value: `$${job.salary.toLocaleString()} / year` },
+          { icon: Clock, label: "Employment Type", value: job?.employment_type },
+          { icon: Globe, label: "Job Type", value: job?.job_type },
+        ]
+          .filter(Boolean)
+          .map((item, idx) => (
+            <div
+              key={idx}
+              className="flex items-center gap-3 p-3 rounded-md border"
+              style={{
+                background: "var(--background-secondary)",
+                borderColor: "var(--border)",
+              }}
+            >
+              <item.icon size={16} className="text-[var(--foreground-muted)]" />
+              <div>
+                <Text size="1" className="text-[var(--foreground-muted)]">{item.label}</Text>
+                <Text size="2" className="font-medium" style={{ color: "var(--foreground)" }}>
+                  {item.value}
+                </Text>
+              </div>
+            </div>
+          ))}
+      </div>
+
+      {/* Job Description */}
+      <div className="mb-6">
+        <Heading size={{ initial: "3", sm: "4" }} className="mb-2 flex items-center gap-2" style={{ color: "var(--foreground)" }}>
+          <Briefcase size={18} /> About this role
+        </Heading>
+        <Text as="p" size="2" className="leading-relaxed whitespace-pre-wrap" style={{ color: "var(--foreground-secondary)" }}>
+          {job?.description}
+        </Text>
+      </div>
+
+      {/* About Company */}
+      <div className="mb-6 p-4 rounded-md border" style={{ background: "var(--background-secondary)", borderColor: "var(--border)" }}>
+        <Heading size={{ initial: "3", sm: "4" }} className="mb-2" style={{ color: "var(--foreground)" }}>
+          About {job?.company.name}
+        </Heading>
+        <Link
+          href={`/company/${job?.company.id}`}
+          className="inline-flex items-center gap-1 text-sm hover:underline"
+          style={{ color: "var(--foreground-muted)" }}
+        >
+          <Globe size={14} /> View company profile
+        </Link>
+      </div>
+
+      {/* Company Actions */}
+      {!isCandidate && (
+        <div className="flex flex-wrap gap-3 pt-4 border-t" style={{ borderColor: "var(--border)" }}>
+          <EditJobDialog job={job} companyId={job.companyId} />
+          <DeleteButton type="job" id={job.id} redirectTo={`/company/${job.company.id}`} />
+          <ViewJobApplicantsBtn />
+        </div>
+      )}
+    </Card>
+  </div>
+</div>
+
+
   );
 }

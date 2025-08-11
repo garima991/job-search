@@ -45,10 +45,10 @@ export default function PostReviewButton() {
   return (
     <Dialog.Root open={open} onOpenChange={setOpen}>
       <Dialog.Trigger>
-        <Button variant="outline">Post Review</Button>
+        <Button variant="outline" className="w-full sm:w-auto">Post Review</Button>
       </Dialog.Trigger>
 
-      <Dialog.Content maxWidth="450px">
+      <Dialog.Content maxWidth="450px" className="w-[95vw] max-w-[450px]">
         <Dialog.Title>Post a Review</Dialog.Title>
         <Dialog.Description size="2" mb="4">
           Share your experience about this company or job.
@@ -62,14 +62,14 @@ export default function PostReviewButton() {
           className="w-full"
         />
 
-        <div className="mt-4 flex justify-end gap-2">
+        <div className="mt-4 flex flex-col sm:flex-row justify-end gap-2">
           <Dialog.Close>
-            <Button variant="soft" color="gray">Cancel</Button>
+            <Button variant="soft" color="gray" className="w-full sm:w-auto">Cancel</Button>
           </Dialog.Close>
           <Button
             onClick={handleSubmit}
             disabled={isSubmitting || !reviewText.trim()}
-            className="bg-blue-600 hover:bg-blue-700 text-white"
+            className="bg-blue-600 hover:bg-blue-700 text-white w-full sm:w-auto"
           >
             {isSubmitting ? "Submitting..." : "Submit Review"}
           </Button>

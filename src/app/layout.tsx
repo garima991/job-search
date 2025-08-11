@@ -14,8 +14,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Job Finder - Find Your Perfect Job",
-  description: "Search and find the perfect job with our advanced filtering system",
+  title: "JobFinder - Find Your Dream Career",
+  description: "Discover amazing opportunities with our modern job search platform",
 };
 
 export default function RootLayout({
@@ -30,11 +30,11 @@ export default function RootLayout({
       >
           <Theme 
             appearance="dark"
-            accentColor="blue"
-            grayColor="slate"
-            radius="medium"
-            scaling="100%"
-            className="w-full min-h-screen bg-gray-900"
+            accentColor="gray"
+            grayColor="gray"
+            radius="large"
+            scaling="110%"
+            className="w-full min-h-screen bg-black"
           >
           {children}
           </Theme>

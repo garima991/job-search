@@ -13,6 +13,7 @@ import {
 } from "@radix-ui/themes";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
+import { Filter, X, Search, MapPin, DollarSign } from "lucide-react";
 
 export const Sidebar = () => {
   const searchParams = useSearchParams();
@@ -54,64 +55,115 @@ export const Sidebar = () => {
   };
 
   return (
-    <Box className="min-w-64 p-6 bg-gray-800 border-r border-gray-700 max-h-fit rounded-lg">
-      <Flex justify="between" align="center" className="mb-6">
-        <Heading size="4" className="text-white">
-          Filters
-        </Heading>
+    <Box className="w-full lg:min-w-80 p-4 sm:p-6 glass rounded-2xl m-2 sm:m-4">
+      <Flex justify="between" align="center" className="mb-6 sm:mb-8">
+        <div className="flex items-center gap-3">
+          <div className="icon-container">
+            <Filter className="w-5 h-5 text-black" />
+          </div>
+          <Heading size={{ initial: "3", sm: "4" }} className="text-white">
+            Filters
+          </Heading>
+        </div>
         <Button
           variant="ghost"
-          size="1"
+          size="2"
           onClick={handleClear}
-          className="text-gray-500 hover:text-gray-300"
+          className="text-foreground-muted hover:text-white hover:bg-background-tertiary rounded-lg transition-all duration-300"
         >
-          Clear All
+          <X className="w-4 h-4" />
         </Button>
       </Flex>
 
-      <Box className="mb-6">
-        <Text size="3" weight="medium" className="mb-3 block text-white">
-          Job Type
-        </Text>
+      <Box className="mb-6 sm:mb-8">
+        <div className="flex items-center gap-2 mb-3 sm:mb-4">
+          <Search className="w-4 h-4 text-white" />
+          <Text size={{ initial: "2", sm: "3" }} className="text-white font-semibold">
+            Job Type
+          </Text>
+        </div>
         <CheckboxGroup.Root
           value={jobType}
           onValueChange={setJobType}
-          className="flex flex-col gap-2"
+          className="flex flex-col gap-2 sm:gap-3"
         >
-          <CheckboxGroup.Item value="fulltime">Full Time</CheckboxGroup.Item>
-          <CheckboxGroup.Item value="parttime">Part Time</CheckboxGroup.Item>
-          <CheckboxGroup.Item value="internship">Internship</CheckboxGroup.Item>
+          <CheckboxGroup.Item 
+            value="fulltime"
+            className="text-foreground-secondary hover:text-white transition-colors"
+          >
+            Full Time
+          </CheckboxGroup.Item>
+          <CheckboxGroup.Item 
+            value="parttime"
+            className="text-foreground-secondary hover:text-white transition-colors"
+          >
+            Part Time
+          </CheckboxGroup.Item>
+          <CheckboxGroup.Item 
+            value="internship"
+            className="text-foreground-secondary hover:text-white transition-colors"
+          >
+            Internship
+          </CheckboxGroup.Item>
         </CheckboxGroup.Root>
       </Box>
 
-      <Separator className="my-4" />
+      <Separator className="my-4 sm:my-6 bg-border/30" />
 
-      <Box className="mb-6">
-        <Text size="3" weight="medium" className="mb-3 block text-white">
-          Work Location
-        </Text>
+      <Box className="mb-6 sm:mb-8">
+        <div className="flex items-center gap-2 mb-3 sm:mb-4">
+          <MapPin className="w-4 h-4 text-white" />
+          <Text size={{ initial: "2", sm: "3" }} className="text-white font-semibold">
+            Work Location
+          </Text>
+        </div>
         <RadioGroup.Root
           value={employementType}
           onValueChange={setEmployementType}
-          className="flex flex-col gap-2"
+          className="flex flex-col gap-2 sm:gap-3"
         >
-          <RadioGroup.Item value="all">All Locations</RadioGroup.Item>
-          <RadioGroup.Item value="remote">Remote</RadioGroup.Item>
-          <RadioGroup.Item value="on-site">On-site</RadioGroup.Item>
-          <RadioGroup.Item value="hybrid">Hybrid</RadioGroup.Item>
+          <RadioGroup.Item 
+            value="all"
+            className="text-foreground-secondary hover:text-white transition-colors"
+          >
+            All Locations
+          </RadioGroup.Item>
+          <RadioGroup.Item 
+            value="remote"
+            className="text-foreground-secondary hover:text-white transition-colors"
+          >
+            Remote
+          </RadioGroup.Item>
+          <RadioGroup.Item 
+            value="on-site"
+            className="text-foreground-secondary hover:text-white transition-colors"
+          >
+            On-site
+          </RadioGroup.Item>
+          <RadioGroup.Item 
+            value="hybrid"
+            className="text-foreground-secondary hover:text-white transition-colors"
+          >
+            Hybrid
+          </RadioGroup.Item>
         </RadioGroup.Root>
       </Box>
 
-      <Separator className="my-4" />
+      <Separator className="my-4 sm:my-6 bg-border/30" />
 
-
-      <Box className="mb-6">
-        <Flex justify="between" align="center" className="mb-3">
-          <Text size="3" weight="medium" className="text-white">
+      <Box className="mb-6 sm:mb-8">
+        <div className="flex items-center gap-2 mb-3 sm:mb-4">
+          <DollarSign className="w-4 h-4 text-white" />
+          <Text size={{ initial: "2", sm: "3" }} className="text-white font-semibold">
             Salary Range
           </Text>
-          <Text size="2" className="text-gray-300">
-            ${salary}
+        </div>
+        <Flex justify="between" align="center" className="mb-3 sm:mb-4">
+          <Text size="2" className="text-foreground-muted">
+            Min Salary
+          </Text>
+          <Text size={{ initial: "2", sm: "3" }} className="text-white font-semibold">
+            ${salary.toLocaleString()}
           </Text>
         </Flex>
         <Box className="px-2">
@@ -123,24 +175,23 @@ export const Sidebar = () => {
             step={500}
             className="w-full"
           />
-          <Flex justify="between" className="mt-2 text-xs">
-            <Text size="1" className="text-gray-400">
-              $2000
+          <Flex justify="between" className="mt-3 text-xs">
+            <Text size="1" className="text-foreground-muted">
+              $2,000
             </Text>
-            <Text size="1" className="text-gray-400">
-              $20000
+            <Text size="1" className="text-foreground-muted">
+              $20,000
             </Text>
           </Flex>
         </Box>
       </Box>
 
-      <Separator className="my-6" />
+      <Separator className="my-6 sm:my-8 bg-border/30" />
 
       <Button
         onClick={handleApply}
-        variant="ghost"
-        size="3"
-        className="w-full bg-gray-700 hover:bg-gray-600 text-white transition"
+        size={{ initial: "2", sm: "3" }}
+        className="w-full btn-primary py-3 sm:py-4 rounded-xl"
       >
         Apply Filters
       </Button>

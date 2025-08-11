@@ -2,52 +2,54 @@
 
 import Header from "@/components/Header";
 import JobContextProvider from "@/context/JobContextProvider";
-import { useEffect, useState } from "react";
-import { createContext } from "react";
-
+import { useEffect, useState, createContext } from "react";
 
 export const UserContext = createContext(null);
 
 export default function Layout({ children }) {
-   
-   const [user, setUser] = useState(null);
+  const [user, setUser] = useState(null);
 
   useEffect(() => {
     async function getUser() {
-      const res = await fetch("http://localhost:3000/api/user");
-      const data = await res.json();
+      try {
+        const res = await fetch("http://localhost:3000/api/user", {
+          credentials: "include"
+        });
+        const data = await res.json();
 
-      if (data.success) {
-        setUser(data?.data);
+        if (data.success) {
+          setUser(data?.data);
+        }
+        console.log(data);
+      } catch (err) {
+        console.error("Failed to fetch user:", err);
       }
-      console.log(data);
     }
     getUser();
   }, []);
 
-    return (
-        <UserContext.Provider
-        value={{
-          user,
-          setUser,
-        }}
-      >
-        <JobContextProvider>
-        <div className="bg-gray-900 w-full h-screen">
-            <div className="sticky top-0 z-50 bg-gray-900">
-                <Header />
-            </div>
-            <main className = "w-full">
+  return (
+    <UserContext.Provider value={{ user, setUser }}>
+      <JobContextProvider>
+        {/* Page background now uses theme variables */}
+        <div
+          style={{
+            background: "var(--background)",
+            color: "var(--foreground)",
+            minHeight: "100vh",
+            width: "100%"
+          }}
+        >
+          {/* Header stays sticky with glass effect */}
+          <div className="sticky top-0 z-50 glass">
+            <Header />
+          </div>
+
+          <main className="w-full">
             {children}
-            </main>
+          </main>
         </div>
-        </JobContextProvider>
-        </UserContext.Provider>
-    )
-
-
-
-
-
-
+      </JobContextProvider>
+    </UserContext.Provider>
+  );
 }
